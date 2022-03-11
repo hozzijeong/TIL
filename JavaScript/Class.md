@@ -1,4 +1,4 @@
- 클래스
+클래스
 
 ### 1 클래스의 문법적 설탕
 
@@ -274,7 +274,7 @@ const you = new MyClass(); // MyClass is not defined
 
     - 클래스 필드에 초기값을 할당하지 않으면 undefiend를 갖게 된다.
     - 클래스 필드를 초기화할 필요가 있다면 constructor 내부에서 초기화 해야 한다.
-        ↑ 위와 같은 이유로 클래스 필드를 초기화할 필요가 있따면 constructor 밖에서 클래스 필드를 정의할 필요가 없다. 즉, 클래스 필드를 초기화 하려면 어차피 constructor에서 초기화를 해야하기 때문에, 중복 코드를 작성하는 셈이 된다.
+      ↑ 위와 같은 이유로 클래스 필드를 초기화할 필요가 있따면 constructor 밖에서 클래스 필드를 정의할 필요가 없다. 즉, 클래스 필드를 초기화 하려면 어차피 constructor에서 초기화를 해야하기 때문에, 중복 코드를 작성하는 셈이 된다.
     - 함수는 일급객체 이므로 함수를 클래스 필드에 할당할 수 있다. 따라서 클래스 필드를 통해 메서드를 저으이할 수 있다. 하지만, 할당된 함수는 클래스 프로토타입 메서드가 아닌 인스턴스 메서드가 된다. 이는 그닥 권장하는 방법은 아니다.
 
     클래스 필드 정의 제안(위에서 다룬 내용)으로 인스턴스 프로퍼티를 정의하는 방식은 2가지가 되었다.
@@ -341,123 +341,154 @@ console.log(me.UserInfo);
         }
     }
     ```
+
 ### 8. 상속에 의한 클래스 확장
 
 1. **클래스 상속과 생성자 함수 상속**
-    
+
     상속에 의한 클래스 확장은 프로토타입 체인을 통해 다른 객체의 자산을 상속받는 프로토타입 상속과는 다른 개념이다. **상속에 의한 클래스 확장은 기존 클래스를 상속받아 새로운 클래스를 확장하여 정의하는 것이다.**
-    
-    클래스는 extends 키워드를 통해 상속을 구현한다. 해당 키워드를 통한 상속은 간편하고 직관직이다. 하지만 생성자 함수의 상속은 해당 문법이 제공되지 않는다. 의사 클래스 상속을 통해 생성자 함수 역시 상속을 구현할 수는 있지만, 클래스의 등장으로 굳이 사용할 필요가 없어졌다. 
-    
+
+    클래스는 extends 키워드를 통해 상속을 구현한다. 해당 키워드를 통한 상속은 간편하고 직관직이다. 하지만 생성자 함수의 상속은 해당 문법이 제공되지 않는다. 의사 클래스 상속을 통해 생성자 함수 역시 상속을 구현할 수는 있지만, 클래스의 등장으로 굳이 사용할 필요가 없어졌다.
+
 2. **extends 키워드**
-    
+
     ```jsx
     class Base{} // 수퍼(베이스/부모)클래스
-    
+
     class Derived etends Base{} // 서브(파생/자식)클래스
     ```
-    
-    extends 키워드의 역할은 수퍼클래스와 서브클래스 간의 상속 관계를 설정하는 것이다. 클래스도 프로토타입을 통해 상속 관계를 구현한다. 수퍼클래스와 서브클래스는 인스턴스의 프로토타입 체인뿐 아니라 클래스 간의 프로토타입 체인도 생성한다. 이를 통해 프로토타입 메서드, 정적 메서드 모두 상속이 가능하다. 
-    
+
+    extends 키워드의 역할은 수퍼클래스와 서브클래스 간의 상속 관계를 설정하는 것이다. 클래스도 프로토타입을 통해 상속 관계를 구현한다. 수퍼클래스와 서브클래스는 인스턴스의 프로토타입 체인뿐 아니라 클래스 간의 프로토타입 체인도 생성한다. 이를 통해 프로토타입 메서드, 정적 메서드 모두 상속이 가능하다.
+
 3. **동적 상속**
-    
-    extends 키워드는 클래스뿐만 아니라 생성자 함수를 상속받아 클래스를 확장할 수 있다. 단, extends 키워드 앞에는 반드시 클래스가 와야 한다. 
-    
+
+    extends 키워드는 클래스뿐만 아니라 생성자 함수를 상속받아 클래스를 확장할 수 있다. 단, extends 키워드 앞에는 반드시 클래스가 와야 한다.
+
     ```jsx
-    function Base(a){
-    	this.a = a
+    function Base(a) {
+        this.a = a;
     }
-    
-    class Derived extends Base{}
-    
-    const derived = new Derived(1)
-    console.log(derived) // Derives{a:1}
+
+    class Derived extends Base {}
+
+    const derived = new Derived(1);
+    console.log(derived); // Derives{a:1}
     ```
-    
+
     extends 키워드 다음에는 클래스 뿐만 아니라 [[Construct]] 내부 메서드를 갖는 함수 객체로 평가될 수 있는 모든 표현식을 사용할 수 있다.( 생성자 함수로 평가되는 모든 표현식 사용 가능)
-    
+
     ```jsx
-    function Base1(){}
-    
-    class Base2{}
-    
-    let condition = true
-    
-    class Derived extends (condition ? Base1 : Base2){}
+    function Base1() {}
+
+    class Base2 {}
+
+    let condition = true;
+
+    class Derived extends (condition ? Base1 : Base2) {}
     ```
-    
+
 4. **서브클래스의 constructor**
-    
-    앞서 클래스를 정의할 때 constructor를 생략하먄 빈 객체 {}가 할당된다고 언급했었다. 부모 클래와 자식 클래스 모두 consturctor를 생략한다면 해당 클래스는 빈 객체를 생성자를 가지게 된다. 
-    
+
+    앞서 클래스를 정의할 때 constructor를 생략하먄 빈 객체 {}가 할당된다고 언급했었다. 부모 클래와 자식 클래스 모두 consturctor를 생략한다면 해당 클래스는 빈 객체를 생성자를 가지게 된다.
+
     하지만 자식 클래스는 constructor를 가지지 않고 부모 클래스가 가지고 있다면, 부모 클래스의 constructor가 자식클래스로 유전된다
-    
-5. **super 키워드** 
-    
+
+5. **super 키워드**
+
     super 키워드는 함수처럼 호출할 수도 있고 this와 같이 식별자처럼 참조할 수 있는 특수한 키워드다. super는 다음과 같이 동작한다.
-    
+
     - super를 호출함현 수퍼클래스의 constructor를 호출한다
     - super를 참조하면 수퍼클래스 메서드를 호출할 수 있다.
-    
-    **super를 호출하면 수퍼클래서의 constructor를 호출한다.** 
-    
+
+    **super를 호출하면 수퍼클래서의 constructor를 호출한다.**
+
     수퍼클래스의 constructor의 프로퍼티를 갖는 인스턴스를 생성한다면, 서브클래스의 constructor를 생략할 수 있다. 하지만, 서브클래서의 constructor에 새로운 프로퍼티가 추가된다면, 서브클래스의 constructor는 생략될 수 없다. 인스턴스를 생성하면서 호출한 서브클래스의 프로퍼티 중 수퍼클래스의 constructor에 전달할 인수가 있다면, 해당 인수는 서브클래스의 constructor에서 호출하는 super를 통해 전달한다.
-    
+
     ```jsx
-    class Base{
-    	constructor(a,b){
-    		this.a = a
-    		this.b = b
-    	}
+    class Base {
+        constructor(a, b) {
+            this.a = a;
+            this.b = b;
+        }
     }
-    
-    class Derived1 extends Base{}
-    
-    class Derived2 extends Base{
-    	constructor(a,b,c){
-    		super(a,b)
-    		this.c = c
-    	}
+
+    class Derived1 extends Base {}
+
+    class Derived2 extends Base {
+        constructor(a, b, c) {
+            super(a, b);
+            this.c = c;
+        }
     }
-    
-    const derived1 = new Derived1(1,2)
-    console.log(derived1) //{a:1,b:2}
-    
-    const derived2 = new Derived2(1,2,3)
-    console.log(derived2) // {a:1,b:2,c:3}
+
+    const derived1 = new Derived1(1, 2);
+    console.log(derived1); //{a:1,b:2}
+
+    const derived2 = new Derived2(1, 2, 3);
+    console.log(derived2); // {a:1,b:2,c:3}
     ```
-    
+
     **super를 호출할 때 주의해야할 사항은 아래와 같다.**
-    
+
     1. 서브클래스에서 constructor를 생략하지 않는 경우 서브클래스의 constructor에서는 **반드시 super를 호출**해야 한다.
     2. 서브클래스의 constructor에서 super를 호출하기 전에는 this를 참조할 수 없다
-    3. super는 반드시 서브클래스의 constructor에서만 호출한다. 서브클래스가 아닌 클래스의 constructor나 함수에서 super를 호출하면 에러가 발생한다. 
-    
-    **super 참조 : 메서드 내에서 super를 참조하면 수퍼클래스의 메서드르 호출할 수 있다.** 
-    
-    1. 서브클래스의 프로토타입 메서드 내에서 super.sayHi는 수퍼클래스의 프로토타입 메서드 sayHi를 가리킨다. 
+    3. super는 반드시 서브클래스의 constructor에서만 호출한다. 서브클래스가 아닌 클래스의 constructor나 함수에서 super를 호출하면 에러가 발생한다.
+
+    **super 참조 : 메서드 내에서 super를 참조하면 수퍼클래스의 메서드르 호출할 수 있다.**
+
+    1. 서브클래스의 프로토타입 메서드 내에서 super.sayHi는 수퍼클래스의 프로토타입 메서드 sayHi를 가리킨다.
         - super는 자신을 참고하고 있는 메서드가 바인딩되어 있는 객체의 프로토타입을 가리킨다.
         - 서브클래스에서 수퍼클래스의 프로토타입 메서드를 호출할 때는 call메서들르 사용해서 this를 전달해야 한다.
         - call 메서드를 사용해 this를 전달하지 않고 수퍼클래스의 메서드를 호출한다면, 수퍼클래서의 메서드의 this는 super.prototype을 가리킨다. 해당 메서드는 프로토타입 메서드이기 때문에 내부의 this는 super.prototype이 아닌 인스턴스를 가리켜야한다. **해당 메서드에서 참조하는 변수는 인스턴스에 존재하기 때문이다.**
-            
-            <aside>
-            💡 [[HomeObject]]
-            [[HomeObject]]는 메서드 자신을 바인딩하고 있는 객체를 가리킨다.
-            [[HomeObject]]를 통해 메서드 자신을 바인딩하고 있는 객체의 프로토타입을 찾을 수 있다.
-            
-            </aside>
-            
+              <aside>
+              💡 [[HomeObject]]
+              [[HomeObject]]는 메서드 자신을 바인딩하고 있는 객체를 가리킨다.
+              [[HomeObject]]를 통해 메서드 자신을 바인딩하고 있는 객체의 프로토타입을 찾을 수 있다.
+              
+              </aside>
+
         - [[HomeObject]]를 가지는 함수만이 super를 참조할 수 있다.단, super 참조는 수퍼클래스의 메서드를 참조하기위해 사용하므로 서브클래스의 메서드에서 사용해야 한다.
         - super 참조는 클래스의 전유물이 아니다. 객체 리터럴에서도 super참조를 사용할 수 있다. 하지만 ES6의 메서드 축약표현으로 정의된 함수만 가능하다.
         1. 서브클래스의 정적 메서드 내에 super.Method는 수퍼클래스의 정적메서드 Method를 가리킨다.
+
 6. **상속 클래스의 인스턴스 생성 과정**
-    
+
     상속 관계에 있는 두 클래서그 협력하여 인스턴스를 생성하는 과정은 단독으로 인스턴스를 생성하는 과정보다 좀 더 복잡하다. 서브클래스의 인스턴스 호출을 단계화 하면 아래와 같다.
-    
+
     1. **서브클래스의 super 호출**
+
+        JS는 수퍼클래스와 서브클래스를 구분하기 위해 “base” 또는 “derived”를 값으로 갖는 내부 슬롯 [[ConstructorKind]]가 존재한다. 다른 클래스를 상속받지 않는다면 base값을 상속 받는다면 derived 값을 갖게 된다. 이를 통해 인스턴스가 생성 될 때 수퍼클래스와 서브 클래스의 동작이 구분된다.
+
+        수퍼클래스는 생성자를 생성하지 않았을 때 암묵적으로 빈 객체를 반환하고 이를 this에 바인딩 한다. **하지만 서브클래스는 자신이 직접 인스턴스를 생성하지 않고 수퍼클래스에게 인스턴스 생성을 위임한다**. 이것이 바로 서브클래스의 constructor에 super를 호출해야 하는 이유이다.
+
+        만약 서브클래스의 constructor에 super가 호출되지 않으면 에러가 발생한다. super가 호출되지 않으면 인스턴스 생성이 되지 않기 때문이다.
+
     2. **수퍼클래스의 인스턴스 생성과 this 바인딩**
+
+        수퍼클래스의 내부에는 constructor 코드가 실행되기 전에 암묵적으로 빈 객체를 생성한다. 그리고 이 빈 객체가 this에 바인딩 된다. 수퍼클래스의 constructor 내부의 this 는 생성된 인스턴스를 가리킨다.
+
+        인스턴스는 수퍼클래스가 생성했지만, new 연산자와 함께 호출된 클래슨는 서브클래스이다. 즉 new.target은 서브클래스를 가리킨다. **따라서 인스턴스는 new.target이 가리키는 서브클래스가 생성한 것으로 처리된다.**
+
+        이로 인해 생성된 인스턴스의 프로토타입은 수퍼클래스의 prototype 프로퍼티가 가리키는 객체가 아니라 서브클래스의 prototype 프로퍼티가 가리키는 객체이다.
+
     3. **수퍼클래스의 인스턴스 초기화**
+
+        this에 바인딩 되어 있는 인스턴스에 프로퍼티를 추가하고 constructor가 인수로 전달받은 초기값으로 프로퍼티 초기화.
+
     4. **서브클래스 constructor로의 복귀와 this 바인딩**
+
+        super 호출이 종료되고 반환된 인스턴스가 this에 바인딩 된다. 서브클래스는 별도의 인스턴스를 생성하지 않고 super가 반환한 인스턴스를 this에 바인딩하여 그대로 사용한다.
+
+        서브클래스에서 super를 호출하지 않으면 인스턴스 생성도 할 수 없고 this를 바인딩 할 수도 없기 때문에 서브클래스의 constructor에서 super를 호출하기 전에 this를 사용할 수 없는 이유가 여기에 있다. **“서브클래스는 인스턴스를 생성하지 않기 때문”**
+
     5. **서브클래스의 인스턴스 초기화**
+
+        super 호출 이후 this에 바인딩 되어있는 인스턴스에 프로퍼티를 추가하고 constructor가 인수로 전달받은 초기값으로 인스턴스 프로퍼티를 초기화한다.
+
     6. **인스턴스 반환**
-7.  **표준 빌트인 생성자 함수 확장**
+
+        완성된 인스턴스가 바인딩된 this를 암묵적으로 반환한다.
+
+7. **표준 빌트인 생성자 함수 확장**
+
+    클래스의 동적 상속에서, extends 키워드 이후에는 클래스 뿐만 아니라 [[Construct]] 내부 메서드를 갖는 함수 객체로 평가 될 수 있는 모든 표현식 사용이 가능하다 했다. 즉, 표준 빌트인 객체도 extends 키워드를 통해 확장이 가능한 것 이다.
