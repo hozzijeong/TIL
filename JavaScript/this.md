@@ -212,3 +212,55 @@ this는 어디서든 참조가 가능하지만, 주 용도가 객체의 프로�
     ```
 
     첫 번째 코드의 문제는 내부 함수의 this와 콜백의 this가 같지 않아서 발생한 문제이다. bind를 통해 this를 일치시켜서 해당 문제를 해결할 수 있다.
+
+    - bind 메서드는 ES6부터 도입된 메서드입니다. 따라서 ES6 이전에는 call과 apply를 통해서 bind를 구현했었는데 이를 한번 구현해보려 합니다.
+      ES6 버전
+
+    ```jsx
+    Function.prototype.newBind = function (target, ...args) {
+        if (typeof this !== "function") throw new Error("함수가 아닙니다.");
+        const that = this;
+        return function (...rest) {
+            return that.call(target, ...args, ...rest);
+        };
+    };
+
+    const obj = function (...rest) {
+        for (const v of rest) {
+            this[v] = v;
+        }
+        return this;
+    };
+    const person = {
+        name: "Jeong",
+        age: 23,
+    };
+    console.log(obj.newBind(person, "나이", "직업")());
+    ```
+
+    ES5 버전
+
+    ```jsx
+    Function.prototype.newBind = function (target) {
+        if (typeof this !== "function") throw new Error("함수가 아닙니다");
+        var args = Array.prototype.slice.call(arguments);
+        var that = this;
+        return function () {
+            var rest = Array.prototype.slice.call(arguments);
+            return that.apply(target, args.concat(rest));
+        };
+    };
+
+    var obj = function () {
+        var rest = Array.prototype.slice.call(arguments);
+        for (let i = 1; i < rest.length; i++) {
+            this[rest[i]] = rest[i];
+        }
+        return this;
+    };
+    var person = {
+        name: "Jeong",
+        age: 23,
+    };
+    console.log(obj.newBind(person, "나이", "직업")());
+    ```
