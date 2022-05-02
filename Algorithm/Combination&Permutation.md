@@ -53,6 +53,28 @@ function getCombination(arr, selectNum) {
 console.log(getCombination([1, 2, 3, 4], 3));
 ```
 
+조합의 경우수를 구하는 경우 위 코드를 통해 얻은 배열의 길이를 반환하면 되지만, 용량이 커지게 된다면 에러가 발생하게 됩니다. 이를 메모이제이션과 DFS를 통해 조합의 경우수를 구하는 방법이 있습니다. (nCr = n-1Cr-1 + n-1Cr을 활용)
+
+```jsx
+function solution(n, r) {
+    let dy = Array.from(Array(n + 1), () => Array(n + 1).fill(0));
+    const dfs = (n, r) => {
+        if (dy[n][r] > 0) return dy[n][r];
+        if (n === r || r === 0) {
+            return 1;
+        } else {
+            return (dy[n][r] = dfs(n - 1, r - 1) + dfs(n - 1, r));
+        }
+    };
+
+    return dfs(n, r);
+}
+
+console.log(solution(33, 19));
+```
+
+dy라는 동적 배열을 설정해서, [n][r]에 저장된 값을 지정해서, 만약에 같은 값을 탐색하게 된다면 끝까지 탐색할 필요 없이 기존에 저장된 값을 활용해서 효율을 좋게할 수 있습니다.
+
 ## 순열
 
 서로 다른 n개의 물건 중에서 r개를 택하여 한 줄로 배열하는 것을 n개의 물건에서 r개 택하는 순열이라 하고, 이 순열의 수를 기호로 nPr와 같이 나타냅니다.
